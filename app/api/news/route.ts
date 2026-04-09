@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchNaverNews } from '@/lib/naver-api';
 import { analyzeNews } from '@/lib/text-analyzer';
+import { generateAISummary } from '@/lib/openai-client';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -20,6 +21,13 @@ export async function GET(request: NextRequest) {
     }
 
     const { items, analysis } = analyzeNews(rawItems);
+
+    // OpenAI로 고품질 요약 생성 (실패 시 rule-based 요약 유지)
+    const aiSummary = await generateAISummary(items, query, period);
+    if (aiSummary) {
+      analysis.summary = aiSummary.summary;
+      analysis.bulletPoints = aiSummary.bulletPoints;
+    }
 
     return NextResponse.json({ items, analysis, query, period, total: items.length });
   } catch (error) {
