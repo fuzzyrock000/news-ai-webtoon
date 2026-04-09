@@ -240,12 +240,14 @@ npm run lint     # ESLint 검사
 
 ## 🌐 Vercel 배포
 
-1. [Vercel](https://vercel.com)에서 이 레포지토리 Import
-2. 환경변수 3개 설정:
+**프로덕션 주소:** [https://naver-kappa.vercel.app](https://naver-kappa.vercel.app)
+
+1. [Vercel](https://vercel.com)에서 이 레포지토리 Import (또는 `npx vercel --prod`)
+2. 프로젝트 **Settings → Environment Variables**에서 아래 3개를 **Production**에 등록:
    - `NAVER_CLIENT_ID`
    - `NAVER_CLIENT_SECRET`
    - `OPENAI_API_KEY`
-3. Deploy 클릭
+3. Redeploy (환경변수 추가·수정 후에는 재배포 필요)
 
 ---
 

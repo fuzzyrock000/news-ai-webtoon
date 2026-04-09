@@ -44,7 +44,6 @@ export default function GifMaker() {
   const [videoUrl, setVideoUrl] = useState('');
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [quality, setQuality] = useState<Quality>('normal');
-  const [showAdvanced, setShowAdvanced] = useState(false);
 
   // 커스텀 옵션
   const [fps, setFps] = useState(10);
@@ -97,10 +96,10 @@ export default function GifMaker() {
     return ffmpeg;
   }, []);
 
-  const getActivePreset = (): QualityPreset => {
+  const getActivePreset = useCallback((): QualityPreset => {
     if (quality === 'custom') return { label: '', fps, width, colors, description: '' };
     return QUALITY_PRESETS[quality];
-  };
+  }, [quality, fps, width, colors]);
 
   const handleConvert = useCallback(async () => {
     setError('');
@@ -179,7 +178,15 @@ export default function GifMaker() {
         setStatus('error');
       }
     }
-  }, [inputMode, videoFile, videoUrl, startTime, endTime, loadFFmpeg, quality, fps, width, colors]);
+  }, [
+    inputMode,
+    videoFile,
+    videoUrl,
+    startTime,
+    endTime,
+    loadFFmpeg,
+    getActivePreset,
+  ]);
 
   const handleDownload = () => {
     if (!gifUrl) return;
@@ -463,7 +470,7 @@ export default function GifMaker() {
 
                       {status === 'done' && gifUrl && (
                         <div className="w-full p-4 space-y-3">
-                          {/* GIF 미리보기 */}
+                          {/* GIF 미리보기 — blob URL은 next/image 미지원 */}
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={gifUrl}

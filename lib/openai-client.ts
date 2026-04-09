@@ -2,9 +2,14 @@ import OpenAI from 'openai';
 import { NewsAnalysis, ProcessedNewsItem } from '@/types/news';
 import { WebtoonScript, WebtoonPanel, WebtoonCharacter, SpeechBubble } from '@/types/webtoon';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 const MODEL = 'gpt-4o-mini';
+
+// 빌드 타임에 초기화하지 않고 호출 시점에 생성 (Vercel 빌드 에러 방지)
+function getOpenAI(): OpenAI {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error('OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
+  return new OpenAI({ apiKey });
+}
 
 // ── 공통 JSON 파싱 헬퍼 ─────────────────────────────────────────────────────
 function parseJSON<T>(text: string): T | null {
@@ -37,6 +42,7 @@ export async function generateAISummary(
     .join('\n');
 
   try {
+    const openai = getOpenAI();
     const response = await openai.chat.completions.create({
       model: MODEL,
       temperature: 0.7,
@@ -136,6 +142,7 @@ export async function generateAIWebtoon(
   const headlines = analysis.bulletPoints.slice(0, 5).join('\n');
 
   try {
+    const openai = getOpenAI();
     const response = await openai.chat.completions.create({
       model: MODEL,
       temperature: 0.9,

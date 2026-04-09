@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Download, Share2, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
+import { X, Share2, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { WebtoonScript, WebtoonPanel, SpeechBubble } from '@/types/webtoon';
 import { cn } from '@/lib/utils';
 
@@ -256,10 +256,13 @@ export default function WebtoonViewer({ script, onClose }: WebtoonViewerProps) {
               {viewMode === 'grid' ? '한 컷씩 보기' : '전체 보기'}
             </button>
             <button
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  const text = `[NewsAI 웹툰] ${script.title}\n${script.subtitle}\n\n오늘의 핫이슈를 4컷 만화로!`;
-                  navigator.share?.({ text }) ?? navigator.clipboard.writeText(text);
+              onClick={async () => {
+                if (typeof window === 'undefined') return;
+                const text = `[NewsAI 웹툰] ${script.title}\n${script.subtitle}\n\n오늘의 핫이슈를 4컷 만화로!`;
+                if (navigator.share) {
+                  await navigator.share({ text }).catch(() => {});
+                } else {
+                  await navigator.clipboard.writeText(text);
                 }
               }}
               className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
