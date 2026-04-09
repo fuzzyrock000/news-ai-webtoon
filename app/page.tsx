@@ -16,6 +16,7 @@ import NewsCard from '@/components/NewsCard';
 import AnalysisPanel from '@/components/AnalysisPanel';
 import { NewsCardSkeleton, AnalysisPanelSkeleton } from '@/components/LoadingSkeleton';
 import WebtoonViewer from '@/components/WebtoonViewer';
+import GifMaker from '@/components/GifMaker';
 import { NewsSearchResponse, ProcessedNewsItem } from '@/types/news';
 import { WebtoonScript } from '@/types/webtoon';
 import { cn } from '@/lib/utils';
@@ -116,9 +117,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 ml-auto">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs text-gray-400">네이버 뉴스 연동 중</span>
+          <div className="flex items-center gap-3 ml-auto">
+            {/* GIF 메이커 */}
+            <GifMaker />
+            <div className="hidden sm:flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs text-gray-400">네이버 뉴스 연동 중</span>
+            </div>
           </div>
         </div>
       </header>
